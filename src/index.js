@@ -8,6 +8,7 @@ function formatQueryParams(params) {
 }
 
 function displayResults(responseJson, maxResults) {
+  console.log(responseJson);
   $('.js-error').empty();
   $('.results-list').empty();
 
@@ -15,8 +16,23 @@ function displayResults(responseJson, maxResults) {
     $('.results-list')
       .append(`<li><h3><a href="${responseJson.data[i].url}">${responseJson.data[i].fullName}</a></h3>
         <p>${responseJson.data[i].description}</p>
-        <p>${responseJson.data[i].latLong}</p>
+        <p>
+        Address: ${responseJson.data[i].addresses[1].line1}
+        </p>
+        <p>
+        City, state, ZIP Code: ${responseJson.data[i].addresses[1].city} 
+        ${responseJson.data[i].addresses[1].stateCode}
+        ${responseJson.data[i].addresses[1].postalCode}     
+        </p>
+        <p>${responseJson.data[i].addresses[1].line2}</p>
         </li>`);
+    //         postalCode: "84764"
+    // city: "Bryce"
+    // stateCode: "UT"
+    // line1: "Highway 63"
+    // type: "Physical"
+    // line3: ""
+    // line2: "Bryce Canyon National Park"
   }
   $('.results').removeClass('hidden');
 }
@@ -28,7 +44,8 @@ function getParks(baseUrl, stateArr, maxResults, apiKey) {
   };
 
   const queryString = formatQueryParams(params);
-  const url = baseUrl + '?' + queryString + '&api_key=' + apiKey;
+  const url =
+    baseUrl + queryString + '&fields=addresses' + '&api_key=' + apiKey;
 
   fetch(url)
     .then(response => {
@@ -46,12 +63,12 @@ function getParks(baseUrl, stateArr, maxResults, apiKey) {
 function watchForm() {
   $('.js-form').on('submit', function() {
     event.preventDefault();
-    const baseUrl = 'https://api.nps.gov/api/v1/parks';
+    const baseUrl = 'https://api.nps.gov/api/v1/parks?';
+
     const stateArr = $('.js-state-entered')
       .val()
       .split(',');
     const maxResults = $('.js-result-amt').val();
-
     const apiKey = 'Fi7Jld1tPRqhnt8xLhHExPHXM7eUDsuXOgLvzILT';
     getParks(baseUrl, stateArr, maxResults, apiKey);
   });

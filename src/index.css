@@ -32,8 +32,10 @@ button:hover {
   margin: 50px;
 }
 
-.error-message {
+.js-error {
   color: red;
+  text-align: center;
+  font-size: 19px;
 }
 
 .hidden {
